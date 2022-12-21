@@ -6,12 +6,27 @@ class ChartBar extends HTMLElement {
     super();
     
     if (data !== undefined) {
+      const legends = [];
+      const dataList = [];
       if (!Array.isArray(data)) {
-        data = Object.keys(data).map(name => {
+        dataList.push(Object.keys(data).map((name) => {
           return { name, count: data[name] }
+        }));
+        legends.push(null);
+      } else {
+        data.forEach((d) => {
+          const firstKey = Object.keys(d)[0];
+          const baseData = (typeof(d[firstKey]) == "object") ? d[firstKey] : d;
+          const newData = Object.keys(baseData).map((name) => {
+            return { name, count: baseData[name] }
+          });
+          dataList.push(newData);
+
+          const legend = (typeof(d[firstKey]) == "object") ? firstKey : null;
+          legends.push(legend);
         });
       }
-      this.setData(data);
+      this.setData(dataList, legends);
     } else {
       const src = this.getAttribute("src");
       if (src) {
@@ -21,28 +36,34 @@ class ChartBar extends HTMLElement {
       const txt = this.textContent.trim();
       const json = CSV.toJSON(CSV.decode(txt));
       this.textContent = "";
-      this.setData(json);
+      this.setData([json], [null]);
     }
   }
   
   async fetchCsv(src) {
     const json = CSV.toJSON(await CSV.fetch(src));
-    this.setData(json);
+    this.setData([json], [null]);
   }
   
-  setData(data) {
-    const labels = data.map((d) => {
-      return d["name"];
+  setData(data, legends) {
+    const barDatas = [];
+    data.forEach((d, index) => {
+      const labels = d.map((d2) => {
+        return d2["name"];
+      });
+      const values = d.map((d2) => {
+        return d2["count"];
+      });
+      
+      const barData = {
+        type: "bar",
+        x: labels,
+        y: values,
+        name: legends[index]
+      };
+      
+      barDatas.push(barData);
     });
-    const values = data.map((d) => {
-      return d["count"];
-    });
-    
-    const barDatas = [{
-      type: "bar",
-      x: labels,
-      y: values
-    }];
     
     const layout = {
       xaxis: {
