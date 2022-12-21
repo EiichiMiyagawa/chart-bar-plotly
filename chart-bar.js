@@ -2,7 +2,7 @@ import "https://cdn.plot.ly/plotly-2.15.1.min.js";
 import { CSV } from "https://js.sabae.cc/CSV.js";
 
 class ChartBar extends HTMLElement {
-  constructor(data) {
+  constructor(data, options) {
     super();
     
     if (data !== undefined) {
@@ -26,26 +26,26 @@ class ChartBar extends HTMLElement {
           legends.push(legend);
         });
       }
-      this.setData(dataList, legends);
+      this.setData(dataList, legends, options);
     } else {
       const src = this.getAttribute("src");
       if (src) {
-        this.fetchCsv(src);
+        this.fetchCsv(src, options);
         return;
       }
       const txt = this.textContent.trim();
       const json = CSV.toJSON(CSV.decode(txt));
       this.textContent = "";
-      this.setData([json], [null]);
+      this.setData([json], [null], options);
     }
   }
   
-  async fetchCsv(src) {
+  async fetchCsv(src, options) {
     const json = CSV.toJSON(await CSV.fetch(src));
     this.setData([json], [null]);
   }
   
-  setData(data, legends) {
+  setData(data, legends, options = {}) {
     const barDatas = [];
     data.forEach((d, index) => {
       const labels = d.map((d2) => {
@@ -74,6 +74,12 @@ class ChartBar extends HTMLElement {
         exponentformat: "none"
       }
     };
+    if (!this.style.width) {
+      layout.width = !options["width"] ? 800 : options["width"];
+    }
+    if (!this.style.height) {
+      layout.height = !options["height"] ? 600 : options["height"];
+    }
     Plotly.newPlot(this, barDatas, layout);
   }
 }

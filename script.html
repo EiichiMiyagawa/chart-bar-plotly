@@ -46,7 +46,10 @@
       }
     }
     ];
-    const chart2 = new ChartBar(data2);
+    const chart2 = new ChartBar(data2, {
+      width: window.innerWidth - 50,
+      height: 300
+    });
     p.appendChild(chart2);
   </script>
 </body>
