@@ -47,6 +47,8 @@ class ChartBar extends HTMLElement {
   
   setData(data, legends, options = {}) {
     const barDatas = [];
+    const orientation = options["orientation"] ? options["orientation"] : "v";
+
     data.forEach((d, index) => {
       const labels = d.map((d2) => {
         return d2["name"];
@@ -57,23 +59,33 @@ class ChartBar extends HTMLElement {
       
       const barData = {
         type: "bar",
-        x: labels,
-        y: values,
-        name: legends[index]
+        x: orientation == "v" ? labels : values,
+        y: orientation == "v" ? values : labels,
+        name: legends[index],
+        orientation: orientation
       };
       
       barDatas.push(barData);
     });
     
-    const layout = {
-      xaxis: {
+    const layout = {};
+    if (orientation == "v") {
+      layout.xaxis = {
         // 日付型の場合のみこのフォーマットが適用される
         tickformat: "%Y/%m/%d"
-      },
-      yaxis: {
+      };
+      layout.yaxis = {
         exponentformat: "none"
-      }
-    };
+      };
+    } else {
+      layout.yaxis = {
+        // 日付型の場合のみこのフォーマットが適用される
+        tickformat: "%Y/%m/%d"
+      };
+      layout.xaxis = {
+        exponentformat: "none"
+      };
+    }
     if (!this.style.width) {
       layout.width = !options["width"] ? 800 : options["width"];
     }
