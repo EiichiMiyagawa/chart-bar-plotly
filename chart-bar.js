@@ -1,6 +1,21 @@
 import "https://cdn.plot.ly/plotly-2.15.1.min.js";
 import { CSV } from "https://js.sabae.cc/CSV.js";
 
+const defaultColors = [
+  "#A3BBBC",
+  "#98ADBF",
+  "#EAB9AF",
+  "#DD725A",
+  "#EEB259",
+  "#EEE358",
+];
+const colors = [...defaultColors];
+for (let i = 0; i < 20; i++) {
+  for (let j = 0; j < defaultColors.length; j++) {
+    colors.push(defaultColors[j]);
+  }
+}
+
 class ChartBar extends HTMLElement {
   constructor(data, options) {
     super();
@@ -62,7 +77,10 @@ class ChartBar extends HTMLElement {
         x: orientation == "v" ? labels : values,
         y: orientation == "v" ? values : labels,
         name: legends[index],
-        orientation: orientation
+        orientation: orientation,
+        marker: {
+          color: colors[index]
+        }
       };
       
       barDatas.push(barData);
