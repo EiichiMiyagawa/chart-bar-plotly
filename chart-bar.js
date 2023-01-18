@@ -90,18 +90,22 @@ class ChartBar extends HTMLElement {
     if (orientation == "v") {
       layout.xaxis = {
         // 日付型の場合のみこのフォーマットが適用される
-        tickformat: "%Y/%m/%d"
+        tickformat: "%Y/%m/%d",
+        automargin: true
       };
       layout.yaxis = {
-        exponentformat: "none"
+        exponentformat: "none",
+        automargin: true
       };
     } else {
       layout.yaxis = {
         // 日付型の場合のみこのフォーマットが適用される
-        tickformat: "%Y/%m/%d"
+        tickformat: "%Y/%m/%d",
+        automargin: true
       };
       layout.xaxis = {
-        exponentformat: "none"
+        exponentformat: "none",
+        automargin: true
       };
     }
     if (!this.style.width) {
