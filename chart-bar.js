@@ -114,6 +114,9 @@ class ChartBar extends HTMLElement {
     if (!this.style.height) {
       layout.height = !options["height"] ? 600 : options["height"];
     }
+    if (options["legend"]) {
+      layout.legend = options["legend"];
+    }
     Plotly.newPlot(this, barDatas, layout);
   }
 }
